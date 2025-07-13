@@ -73,7 +73,7 @@ const LogViewer: React.FC<LogViewerProps> = ({
   };
 
   return (
-    <Box>
+    <Box sx={{ width: '100%', height: '100%' }}>
       <Typography variant="h4" gutterBottom>
         ログビューア
       </Typography>
@@ -110,7 +110,7 @@ const LogViewer: React.FC<LogViewerProps> = ({
         </FormControl>
       </Box>
 
-      <Paper sx={{ height: 700, width: '100%' }}>
+      <Paper sx={{ height: 'calc(100vh - 280px)', width: '100%', minHeight: 600 }}>
         <DataGrid
           rows={filteredLogs}
           columns={LOG_GRID_COLUMNS}

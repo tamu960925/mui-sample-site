@@ -61,10 +61,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({
           width: drawerOpen ? `calc(100% - ${DRAWER_WIDTH}px)` : '100%',
           ml: drawerOpen ? `${DRAWER_WIDTH}px` : 0,
           transition: 'width 0.3s, margin 0.3s',
+          height: '100vh',
+          overflow: 'auto',
         }}
       >
         <Toolbar />
-        <Container maxWidth="xl">
+        <Container maxWidth={false} sx={{ height: '100%' }}>
           {children}
         </Container>
       </Box>
