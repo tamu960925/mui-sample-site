@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -14,7 +14,6 @@ import {
   Avatar,
   List,
   ListItem,
-  ListItemAvatar,
   ListItemText,
   Drawer,
   IconButton,
@@ -37,152 +36,190 @@ import {
   MenuItem,
   Checkbox,
   FormControlLabel,
-  Radio,
-  RadioGroup,
   Slider,
   Switch,
-  Rating,
-  Fab,
   Snackbar,
   Alert,
   Badge,
   Tooltip,
   LinearProgress,
   CircularProgress,
-  Stepper,
-  Step,
-  StepLabel,
-  SpeedDial,
-  SpeedDialAction,
-  SpeedDialIcon,
-  Breadcrumbs,
-  Link,
   Paper,
+  InputAdornment,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { BarChart, LineChart, PieChart } from '@mui/x-charts';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MenuIcon from '@mui/icons-material/Menu';
-import StarIcon from '@mui/icons-material/Star';
-import PersonIcon from '@mui/icons-material/Person';
-import WorkIcon from '@mui/icons-material/Work';
-import SchoolIcon from '@mui/icons-material/School';
-import HomeIcon from '@mui/icons-material/Home';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import TableChartIcon from '@mui/icons-material/TableChart';
-import SettingsIcon from '@mui/icons-material/Settings';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import SaveIcon from '@mui/icons-material/Save';
-import PrintIcon from '@mui/icons-material/Print';
-import EmailIcon from '@mui/icons-material/Email';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import SecurityIcon from '@mui/icons-material/Security';
+import BugReportIcon from '@mui/icons-material/BugReport';
+import MonitorIcon from '@mui/icons-material/Monitor';
+import SearchIcon from '@mui/icons-material/Search';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import WarningIcon from '@mui/icons-material/Warning';
+import ErrorIcon from '@mui/icons-material/Error';
+import InfoIcon from '@mui/icons-material/Info';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import NetworkCheckIcon from '@mui/icons-material/NetworkCheck';
+import StorageIcon from '@mui/icons-material/Storage';
+import VpnLockIcon from '@mui/icons-material/VpnLock';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import DownloadIcon from '@mui/icons-material/Download';
 
 const theme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
-      main: '#1976d2',
+      main: '#00acc1',
     },
     secondary: {
-      main: '#dc004e',
+      main: '#ff5722',
+    },
+    background: {
+      default: '#121212',
+      paper: '#1e1e1e',
+    },
+    error: {
+      main: '#f44336',
+    },
+    warning: {
+      main: '#ff9800',
+    },
+    info: {
+      main: '#2196f3',
+    },
+    success: {
+      main: '#4caf50',
     },
   },
 });
 
-const skills = [
-  'React', 'TypeScript', 'Material-UI', 'Node.js', 'JavaScript', 'HTML5', 'CSS3', 'Git'
+// ログレベル定義
+const logLevels = ['ERROR', 'WARN', 'INFO', 'DEBUG'];
+
+// セキュリティメトリクス
+const securityMetrics = [
+  { name: '脅威検知', value: 24, trend: 'up', color: '#f44336' },
+  { name: 'ブロック済み攻撃', value: 156, trend: 'down', color: '#4caf50' },
+  { name: 'アクティブセッション', value: 1247, trend: 'up', color: '#2196f3' },
+  { name: 'システム稼働率', value: 99.8, trend: 'stable', color: '#4caf50' },
 ];
 
-const projects = [
-  {
-    title: 'Eコマースサイト',
-    description: 'React と Material-UI を使用したレスポンシブなEコマースサイト',
-    tech: ['React', 'Material-UI', 'TypeScript'],
-    rating: 4.5,
-    status: 'completed'
+// チャートデータ
+const threatData = [
+  { time: '00:00', threats: 12, blocked: 45 },
+  { time: '04:00', threats: 8, blocked: 32 },
+  { time: '08:00', threats: 24, blocked: 67 },
+  { time: '12:00', threats: 18, blocked: 54 },
+  { time: '16:00', threats: 32, blocked: 89 },
+  { time: '20:00', threats: 28, blocked: 76 },
+];
+
+const logSourceData = [
+  { id: 0, value: 35, label: 'Web Server' },
+  { id: 1, value: 25, label: 'Database' },
+  { id: 2, value: 20, label: 'Application' },
+  { id: 3, value: 20, label: 'Network' },
+];
+
+// アラートデータ
+const alerts = [
+  { 
+    id: 1, 
+    timestamp: '2024-01-13 15:30:24', 
+    level: 'ERROR', 
+    source: 'web-server-01', 
+    message: 'Suspicious login attempt from IP 192.168.1.100',
+    status: 'open'
   },
-  {
-    title: 'タスク管理アプリ',
-    description: 'チーム向けのタスク管理アプリケーション',
-    tech: ['React', 'Node.js', 'MongoDB'],
-    rating: 4.2,
-    status: 'in-progress'
+  { 
+    id: 2, 
+    timestamp: '2024-01-13 15:28:12', 
+    level: 'WARN', 
+    source: 'database-01', 
+    message: 'High memory usage detected (85%)',
+    status: 'investigating'
   },
-  {
-    title: 'ポートフォリオサイト',
-    description: 'Material-UI を使ったポートフォリオサイト',
-    tech: ['React', 'Material-UI', 'GitHub Pages'],
-    rating: 4.8,
-    status: 'completed'
-  }
+  { 
+    id: 3, 
+    timestamp: '2024-01-13 15:25:45', 
+    level: 'ERROR', 
+    source: 'app-server-02', 
+    message: 'SQL injection attempt blocked',
+    status: 'resolved'
+  },
+  { 
+    id: 4, 
+    timestamp: '2024-01-13 15:22:33', 
+    level: 'INFO', 
+    source: 'firewall-01', 
+    message: 'Connection established from authorized IP',
+    status: 'closed'
+  },
+  { 
+    id: 5, 
+    timestamp: '2024-01-13 15:20:11', 
+    level: 'WARN', 
+    source: 'web-server-02', 
+    message: 'Rate limit exceeded for user session',
+    status: 'open'
+  },
 ];
 
-// Chart data
-const salesData = [
-  { month: '1月', sales: 4000, profit: 2400 },
-  { month: '2月', sales: 3000, profit: 1398 },
-  { month: '3月', sales: 2000, profit: 9800 },
-  { month: '4月', sales: 2780, profit: 3908 },
-  { month: '5月', sales: 1890, profit: 4800 },
-  { month: '6月', sales: 2390, profit: 3800 },
+// ログエントリ
+const logEntries = [
+  { id: 1, timestamp: '2024-01-13 15:30:24', level: 'ERROR', source: 'auth-service', message: 'Failed login attempt for user admin from 192.168.1.100' },
+  { id: 2, timestamp: '2024-01-13 15:30:22', level: 'INFO', source: 'web-server', message: 'GET /api/users 200 45ms' },
+  { id: 3, timestamp: '2024-01-13 15:30:20', level: 'WARN', source: 'database', message: 'Query execution time exceeded threshold: 1200ms' },
+  { id: 4, timestamp: '2024-01-13 15:30:18', level: 'DEBUG', source: 'cache-service', message: 'Cache miss for key: user_session_abc123' },
+  { id: 5, timestamp: '2024-01-13 15:30:16', level: 'ERROR', source: 'payment-service', message: 'Payment processing failed: insufficient funds' },
+  { id: 6, timestamp: '2024-01-13 15:30:14', level: 'INFO', source: 'notification-service', message: 'Email notification sent to user@example.com' },
+  { id: 7, timestamp: '2024-01-13 15:30:12', level: 'WARN', source: 'api-gateway', message: 'Rate limit approaching for client ID: client_123' },
+  { id: 8, timestamp: '2024-01-13 15:30:10', level: 'INFO', source: 'user-service', message: 'User profile updated successfully for user ID: 12345' },
 ];
 
-const pieData = [
-  { id: 0, value: 10, label: 'React' },
-  { id: 1, value: 15, label: 'TypeScript' },
-  { id: 2, value: 20, label: 'Material-UI' },
-  { id: 3, value: 25, label: 'Node.js' },
-];
-
-// Table data
-const rows = [
-  { id: 1, name: '田中太郎', email: 'tanaka@example.com', role: 'Developer', status: 'Active' },
-  { id: 2, name: '佐藤花子', email: 'sato@example.com', role: 'Designer', status: 'Active' },
-  { id: 3, name: '鈴木次郎', email: 'suzuki@example.com', role: 'Manager', status: 'Inactive' },
-  { id: 4, name: '高橋美咲', email: 'takahashi@example.com', role: 'Developer', status: 'Active' },
-  { id: 5, name: '伊藤健', email: 'ito@example.com', role: 'Analyst', status: 'Active' },
-];
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 90 },
-  { field: 'name', headerName: '名前', width: 150 },
-  { field: 'email', headerName: 'メール', width: 200 },
-  { field: 'role', headerName: '役職', width: 130 },
-  { field: 'status', headerName: 'ステータス', width: 130 },
+const logColumns: GridColDef[] = [
+  { field: 'timestamp', headerName: 'Timestamp', width: 180 },
+  { field: 'level', headerName: 'Level', width: 100 },
+  { field: 'source', headerName: 'Source', width: 150 },
+  { field: 'message', headerName: 'Message', width: 500, flex: 1 },
 ];
 
 const drawerWidth = 240;
 
 const menuItems = [
-  { text: 'ホーム', icon: <HomeIcon />, id: 'home' },
-  { text: 'ダッシュボード', icon: <BarChartIcon />, id: 'dashboard' },
-  { text: 'データテーブル', icon: <TableChartIcon />, id: 'table' },
-  { text: '設定', icon: <SettingsIcon />, id: 'settings' },
+  { text: 'ダッシュボード', icon: <DashboardIcon />, id: 'dashboard' },
+  { text: 'ログ検索', icon: <SearchIcon />, id: 'logs' },
+  { text: 'アラート', icon: <NotificationsIcon />, id: 'alerts' },
+  { text: 'セキュリティ', icon: <SecurityIcon />, id: 'security' },
+  { text: 'リアルタイム監視', icon: <MonitorIcon />, id: 'monitor' },
 ];
 
 function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [currentTab, setCurrentTab] = useState(0);
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState('dashboard');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [sliderValue, setSliderValue] = useState(30);
-  const [checked, setChecked] = useState(false);
-  const [rating, setRatingValue] = useState(4);
-  const [selectValue, setSelectValue] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [logLevel, setLogLevel] = useState('');
+  const [alertCount, setAlertCount] = useState(24);
+  const [isRealTime, setIsRealTime] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState(new Date());
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
-  };
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setCurrentTab(newValue);
   };
 
   const handleMenuClick = (pageId: string) => {
@@ -190,347 +227,617 @@ function App() {
     setDrawerOpen(false);
   };
 
+  const handleRefresh = () => {
+    setLastUpdate(new Date());
+    setSnackbarOpen(true);
+  };
+
+  const getLogLevelIcon = (level: string) => {
+    switch (level) {
+      case 'ERROR':
+        return <ErrorIcon color="error" />;
+      case 'WARN':
+        return <WarningIcon color="warning" />;
+      case 'INFO':
+        return <InfoIcon color="info" />;
+      case 'DEBUG':
+        return <InfoIcon color="disabled" />;
+      default:
+        return <InfoIcon />;
+    }
+  };
+
+  const getLogLevelColor = (level: string) => {
+    switch (level) {
+      case 'ERROR':
+        return 'error';
+      case 'WARN':
+        return 'warning';
+      case 'INFO':
+        return 'info';
+      case 'DEBUG':
+        return 'default';
+      default:
+        return 'default';
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'open':
+        return 'error';
+      case 'investigating':
+        return 'warning';
+      case 'resolved':
+        return 'success';
+      case 'closed':
+        return 'default';
+      default:
+        return 'default';
+    }
+  };
+
+  // リアルタイム更新のシミュレーション
+  useEffect(() => {
+    if (isRealTime) {
+      const interval = setInterval(() => {
+        setLastUpdate(new Date());
+        setAlertCount(prev => prev + Math.floor(Math.random() * 3) - 1);
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [isRealTime]);
+
   const renderContent = () => {
     switch (currentPage) {
-      case 'home':
-        return (
-          <>
-            <Box sx={{ textAlign: 'center', mb: 6 }}>
-              <Avatar
-                sx={{
-                  width: 120,
-                  height: 120,
-                  mx: 'auto',
-                  mb: 2,
-                  bgcolor: 'primary.main'
-                }}
-              >
-                <PersonIcon sx={{ fontSize: 60 }} />
-              </Avatar>
-              <Typography variant="h3" component="h1" gutterBottom>
-                田村 太郎
-              </Typography>
-              <Typography variant="h5" color="text.secondary" gutterBottom>
-                フロントエンド開発者
-              </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
-                Material-UI を使用したモダンなWebアプリケーション開発を専門としています。
-                ユーザビリティとパフォーマンスを重視した設計を心がけています。
-              </Typography>
-              <Box sx={{ mt: 3 }}>
-                <Rating value={rating} onChange={(event, newValue) => setRatingValue(newValue || 0)} />
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  評価: {rating}/5
-                </Typography>
-              </Box>
-            </Box>
-
-            <Tabs value={currentTab} onChange={handleTabChange} centered>
-              <Tab label="スキル" />
-              <Tab label="プロジェクト" />
-              <Tab label="フォーム例" />
-            </Tabs>
-
-            <Box sx={{ mt: 3 }}>
-              {currentTab === 0 && (
-                <Grid container spacing={4}>
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <Card>
-                      <CardContent>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                          <WorkIcon sx={{ mr: 1, color: 'primary.main' }} />
-                          <Typography variant="h6">技術スキル</Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                          {skills.map((skill) => (
-                            <Chip 
-                              key={skill} 
-                              label={skill} 
-                              variant="outlined" 
-                              color="primary"
-                              onClick={() => setSnackbarOpen(true)}
-                            />
-                          ))}
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <Card>
-                      <CardContent>
-                        <Typography variant="h6" gutterBottom>
-                          プログレス例
-                        </Typography>
-                        <Box sx={{ mb: 2 }}>
-                          <Typography variant="body2">React</Typography>
-                          <LinearProgress variant="determinate" value={90} sx={{ mt: 1 }} />
-                        </Box>
-                        <Box sx={{ mb: 2 }}>
-                          <Typography variant="body2">TypeScript</Typography>
-                          <LinearProgress variant="determinate" value={85} sx={{ mt: 1 }} />
-                        </Box>
-                        <Box sx={{ mb: 2 }}>
-                          <Typography variant="body2">Material-UI</Typography>
-                          <LinearProgress variant="determinate" value={80} sx={{ mt: 1 }} />
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                </Grid>
-              )}
-
-              {currentTab === 1 && (
-                <Grid container spacing={3}>
-                  {projects.map((project, index) => (
-                    <Grid key={index} size={{ xs: 12, md: 4 }}>
-                      <Card sx={{ height: '100%' }}>
-                        <CardContent>
-                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                            <Avatar sx={{ bgcolor: 'secondary.main', mr: 2 }}>
-                              <StarIcon />
-                            </Avatar>
-                            <Typography variant="h6">{project.title}</Typography>
-                          </Box>
-                          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                            {project.description}
-                          </Typography>
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 2 }}>
-                            {project.tech.map((tech) => (
-                              <Chip key={tech} label={tech} size="small" />
-                            ))}
-                          </Box>
-                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Rating value={project.rating} readOnly precision={0.1} />
-                            <Chip 
-                              label={project.status} 
-                              color={project.status === 'completed' ? 'success' : 'warning'}
-                              size="small"
-                            />
-                          </Box>
-                        </CardContent>
-                        <CardActions>
-                          <Button size="small">詳細</Button>
-                          <Button size="small">
-                            <FavoriteIcon />
-                          </Button>
-                          <Button size="small">
-                            <ShareIcon />
-                          </Button>
-                        </CardActions>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Grid>
-              )}
-
-              {currentTab === 2 && (
-                <Paper sx={{ p: 3 }}>
-                  <Typography variant="h6" gutterBottom>
-                    フォームコンポーネントの例
-                  </Typography>
-                  <Grid container spacing={3}>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <TextField
-                        fullWidth
-                        label="お名前"
-                        variant="outlined"
-                        margin="normal"
-                      />
-                      <TextField
-                        fullWidth
-                        label="メールアドレス"
-                        type="email"
-                        variant="outlined"
-                        margin="normal"
-                      />
-                      <FormControl fullWidth margin="normal">
-                        <InputLabel>カテゴリ</InputLabel>
-                        <Select
-                          value={selectValue}
-                          label="カテゴリ"
-                          onChange={(e) => setSelectValue(e.target.value)}
-                        >
-                          <MenuItem value="web">Web開発</MenuItem>
-                          <MenuItem value="mobile">モバイル開発</MenuItem>
-                          <MenuItem value="design">デザイン</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <Typography variant="body1" gutterBottom>
-                        スライダー値: {sliderValue}
-                      </Typography>
-                      <Slider
-                        value={sliderValue}
-                        onChange={(e, value) => setSliderValue(value as number)}
-                        valueLabelDisplay="auto"
-                        min={0}
-                        max={100}
-                      />
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={checked}
-                            onChange={(e) => setChecked(e.target.checked)}
-                          />
-                        }
-                        label="通知を受け取る"
-                      />
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        label="利用規約に同意する"
-                      />
-                      <Box sx={{ mt: 2 }}>
-                        <Button 
-                          variant="contained" 
-                          onClick={() => setDialogOpen(true)}
-                          sx={{ mr: 2 }}
-                        >
-                          送信
-                        </Button>
-                        <Button variant="outlined">
-                          リセット
-                        </Button>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Paper>
-              )}
-            </Box>
-
-            <Box sx={{ mt: 6 }}>
-              <Typography variant="h5" gutterBottom>
-                アコーディオンの例
-              </Typography>
-              <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>経歴について</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>
-                    10年以上のWebアプリケーション開発経験があります。
-                    React、Vue.js、Angularなどのモダンフレームワークを使用した
-                    大規模プロジェクトの開発に携わってきました。
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>得意分野</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>
-                    フロントエンド開発、UI/UXデザイン、パフォーマンス最適化、
-                    レスポンシブデザインが得意分野です。
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
-            </Box>
-          </>
-        );
 
       case 'dashboard':
         return (
           <Box>
-            <Typography variant="h4" gutterBottom>
-              ダッシュボード
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h4" gutterBottom>
+                セキュリティダッシュボード
+              </Typography>
+              <Box>
+                <Tooltip title="リアルタイム監視">
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={isRealTime}
+                        onChange={(e) => setIsRealTime(e.target.checked)}
+                        color="primary"
+                      />
+                    }
+                    label="リアルタイム"
+                  />
+                </Tooltip>
+                <Button
+                  variant="outlined"
+                  startIcon={<RefreshIcon />}
+                  onClick={handleRefresh}
+                  sx={{ ml: 2 }}
+                >
+                  更新
+                </Button>
+              </Box>
+            </Box>
+
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              最終更新: {lastUpdate.toLocaleString()}
             </Typography>
+
+            {/* メトリクスカード */}
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+              {securityMetrics.map((metric, index) => (
+                <Grid key={index} size={{ xs: 12, sm: 6, md: 3 }}>
+                  <Card>
+                    <CardContent>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Box>
+                          <Typography color="text.secondary" gutterBottom>
+                            {metric.name}
+                          </Typography>
+                          <Typography variant="h4" component="div">
+                            {typeof metric.value === 'number' && metric.value < 100 
+                              ? `${metric.value}%` 
+                              : metric.value}
+                          </Typography>
+                        </Box>
+                        <Box sx={{ color: metric.color }}>
+                          {metric.trend === 'up' && <TrendingUpIcon />}
+                          {metric.trend === 'down' && <TrendingDownIcon />}
+                          {metric.trend === 'stable' && <CheckCircleIcon />}
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* チャート */}
             <Grid container spacing={3}>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 8 }}>
                 <Paper sx={{ p: 2 }}>
                   <Typography variant="h6" gutterBottom>
-                    売上推移
+                    脅威検知 & ブロック状況（24時間）
                   </Typography>
                   <BarChart
-                    xAxis={[{ scaleType: 'band', data: salesData.map(d => d.month) }]}
+                    xAxis={[{ scaleType: 'band', data: threatData.map(d => d.time) }]}
                     series={[
-                      { data: salesData.map(d => d.sales), label: '売上' },
-                      { data: salesData.map(d => d.profit), label: '利益' },
+                      { data: threatData.map(d => d.threats), label: '脅威検知', color: '#f44336' },
+                      { data: threatData.map(d => d.blocked), label: 'ブロック済み', color: '#4caf50' },
                     ]}
-                    width={400}
+                    width={600}
                     height={300}
                   />
                 </Paper>
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Paper sx={{ p: 2 }}>
                   <Typography variant="h6" gutterBottom>
-                    技術分布
+                    ログソース分布
                   </Typography>
                   <PieChart
-                    series={[{ data: pieData }]}
-                    width={400}
+                    series={[{ data: logSourceData }]}
+                    width={300}
                     height={300}
                   />
                 </Paper>
               </Grid>
+            </Grid>
+
+            {/* 最新アラート */}
+            <Paper sx={{ p: 2, mt: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                最新アラート
+              </Typography>
+              <List>
+                {alerts.slice(0, 5).map((alert) => (
+                  <ListItem key={alert.id} divider>
+                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                      {getLogLevelIcon(alert.level)}
+                      <Box sx={{ ml: 2, flex: 1 }}>
+                        <Typography variant="body1">{alert.message}</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {alert.source} - {alert.timestamp}
+                        </Typography>
+                      </Box>
+                      <Chip 
+                        label={alert.status} 
+                        color={getStatusColor(alert.status)} 
+                        size="small"
+                      />
+                    </Box>
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+          </Box>
+        );
+
+      case 'logs':
+        return (
+          <Box>
+            <Typography variant="h4" gutterBottom>
+              ログ検索
+            </Typography>
+            
+            {/* 検索・フィルター */}
+            <Paper sx={{ p: 2, mb: 3 }}>
+              <Grid container spacing={2} alignItems="center">
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    fullWidth
+                    placeholder="ログメッセージを検索..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 3 }}>
+                  <FormControl fullWidth>
+                    <InputLabel>ログレベル</InputLabel>
+                    <Select
+                      value={logLevel}
+                      label="ログレベル"
+                      onChange={(e) => setLogLevel(e.target.value)}
+                    >
+                      <MenuItem value="">すべて</MenuItem>
+                      {logLevels.map((level) => (
+                        <MenuItem key={level} value={level}>{level}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid size={{ xs: 12, md: 3 }}>
+                  <Button
+                    variant="contained"
+                    startIcon={<FilterListIcon />}
+                    onClick={() => setSnackbarOpen(true)}
+                    fullWidth
+                  >
+                    フィルター適用
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
+
+            {/* ログテーブル */}
+            <Paper sx={{ height: 600, width: '100%' }}>
+              <DataGrid
+                rows={logEntries.filter(log => 
+                  (searchQuery === '' || log.message.toLowerCase().includes(searchQuery.toLowerCase())) &&
+                  (logLevel === '' || log.level === logLevel)
+                )}
+                columns={logColumns}
+                initialState={{
+                  pagination: {
+                    paginationModel: { page: 0, pageSize: 10 },
+                  },
+                }}
+                pageSizeOptions={[10, 25, 50]}
+                getRowClassName={(params) => `log-level-${params.row.level.toLowerCase()}`}
+              />
+            </Paper>
+          </Box>
+        );
+
+      case 'alerts':
+        return (
+          <Box>
+            <Typography variant="h4" gutterBottom>
+              アラート管理
+            </Typography>
+            
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12, md: 8 }}>
+                <Paper sx={{ p: 2 }}>
+                  <Typography variant="h6" gutterBottom>
+                    アクティブアラート
+                  </Typography>
+                  <List>
+                    {alerts.map((alert) => (
+                      <ListItem key={alert.id} divider>
+                        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', p: 1 }}>
+                          {getLogLevelIcon(alert.level)}
+                          <Box sx={{ ml: 2, flex: 1 }}>
+                            <Typography variant="h6">{alert.message}</Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              ソース: {alert.source} | 時刻: {alert.timestamp}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+                            <Chip 
+                              label={alert.status} 
+                              color={getStatusColor(alert.status)} 
+                              size="small"
+                            />
+                            <Box>
+                              <Button size="small" variant="outlined" sx={{ mr: 1 }}>
+                                詳細
+                              </Button>
+                              <Button size="small" variant="contained" color="success">
+                                解決
+                              </Button>
+                            </Box>
+                          </Box>
+                        </Box>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Paper>
+              </Grid>
+              
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Card sx={{ mb: 2 }}>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      アラート統計
+                    </Typography>
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="body2">オープン</Typography>
+                      <LinearProgress 
+                        variant="determinate" 
+                        value={60} 
+                        color="error"
+                        sx={{ mt: 1 }} 
+                      />
+                      <Typography variant="body2" align="right">3/5</Typography>
+                    </Box>
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="body2">調査中</Typography>
+                      <LinearProgress 
+                        variant="determinate" 
+                        value={20} 
+                        color="warning"
+                        sx={{ mt: 1 }} 
+                      />
+                      <Typography variant="body2" align="right">1/5</Typography>
+                    </Box>
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="body2">解決済み</Typography>
+                      <LinearProgress 
+                        variant="determinate" 
+                        value={20} 
+                        color="success"
+                        sx={{ mt: 1 }} 
+                      />
+                      <Typography variant="body2" align="right">1/5</Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
+                
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography>アラート設定</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <FormControlLabel
+                      control={<Checkbox defaultChecked />}
+                      label="エラーレベル通知"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox defaultChecked />}
+                      label="警告レベル通知"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox />}
+                      label="情報レベル通知"
+                    />
+                  </AccordionDetails>
+                </Accordion>
+              </Grid>
+            </Grid>
+          </Box>
+        );
+
+      case 'security':
+        return (
+          <Box>
+            <Typography variant="h4" gutterBottom>
+              セキュリティ分析
+            </Typography>
+            
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Paper sx={{ p: 2, mb: 3 }}>
+                  <Typography variant="h6" gutterBottom>
+                    攻撃パターン分析
+                  </Typography>
+                  <LineChart
+                    xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7] }]}
+                    series={[
+                      { data: [12, 8, 24, 18, 32, 28, 15], label: 'SQLインジェクション', color: '#f44336' },
+                      { data: [5, 12, 8, 22, 16, 20, 10], label: 'XSS攻撃', color: '#ff9800' },
+                      { data: [8, 6, 15, 12, 20, 18, 12], label: 'ブルートフォース', color: '#9c27b0' },
+                    ]}
+                    width={500}
+                    height={300}
+                  />
+                </Paper>
+              </Grid>
+              
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Paper sx={{ p: 2, mb: 3 }}>
+                  <Typography variant="h6" gutterBottom>
+                    地理的脅威分布
+                  </Typography>
+                  <Box sx={{ height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+                    <VpnLockIcon sx={{ fontSize: 80, color: 'primary.main', mb: 2 }} />
+                    <Typography variant="body1" color="text.secondary">
+                      地理的脅威マップ
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      (実装予定)
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+              
               <Grid size={{ xs: 12 }}>
                 <Paper sx={{ p: 2 }}>
                   <Typography variant="h6" gutterBottom>
-                    月次トレンド
+                    セキュリティイベント詳細
                   </Typography>
-                  <LineChart
-                    xAxis={[{ data: [1, 2, 3, 4, 5, 6] }]}
-                    series={[
-                      { data: [2, 5.5, 2, 8.5, 1.5, 5], label: 'プロジェクト数' },
-                    ]}
-                    width={800}
-                    height={300}
-                  />
+                  <TableContainer>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>時刻</TableCell>
+                          <TableCell>イベントタイプ</TableCell>
+                          <TableCell>送信元IP</TableCell>
+                          <TableCell>対象リソース</TableCell>
+                          <TableCell>アクション</TableCell>
+                          <TableCell>ステータス</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>15:30:24</TableCell>
+                          <TableCell>認証失敗</TableCell>
+                          <TableCell>192.168.1.100</TableCell>
+                          <TableCell>/admin/login</TableCell>
+                          <TableCell>ブロック</TableCell>
+                          <TableCell><Chip label="処理済み" color="success" size="small" /></TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>15:28:12</TableCell>
+                          <TableCell>SQLインジェクション</TableCell>
+                          <TableCell>203.0.113.45</TableCell>
+                          <TableCell>/api/search</TableCell>
+                          <TableCell>ブロック</TableCell>
+                          <TableCell><Chip label="処理済み" color="success" size="small" /></TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>15:25:45</TableCell>
+                          <TableCell>異常なトラフィック</TableCell>
+                          <TableCell>198.51.100.23</TableCell>
+                          <TableCell>/api/*</TableCell>
+                          <TableCell>レート制限</TableCell>
+                          <TableCell><Chip label="監視中" color="warning" size="small" /></TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 </Paper>
               </Grid>
             </Grid>
           </Box>
         );
 
-      case 'table':
+      case 'monitor':
         return (
           <Box>
             <Typography variant="h4" gutterBottom>
-              データテーブル
+              リアルタイム監視
             </Typography>
-            <Paper sx={{ height: 400, width: '100%' }}>
-              <DataGrid
-                rows={rows}
-                columns={columns}
-                initialState={{
-                  pagination: {
-                    paginationModel: { page: 0, pageSize: 5 },
-                  },
-                }}
-                pageSizeOptions={[5, 10]}
-                checkboxSelection
-              />
-            </Paper>
-          </Box>
-        );
-
-      case 'settings':
-        return (
-          <Box>
-            <Typography variant="h4" gutterBottom>
-              設定
-            </Typography>
-            <Stepper activeStep={1} sx={{ mb: 4 }}>
-              <Step>
-                <StepLabel>基本設定</StepLabel>
-              </Step>
-              <Step>
-                <StepLabel>詳細設定</StepLabel>
-              </Step>
-              <Step>
-                <StepLabel>完了</StepLabel>
-              </Step>
-            </Stepper>
-            <Paper sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                各種設定項目
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <CircularProgress size={24} sx={{ mr: 2 }} />
-                <Typography>設定を読み込み中...</Typography>
-              </Box>
-            </Paper>
+            
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12, md: 8 }}>
+                <Paper sx={{ p: 2, mb: 3 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'between', mb: 2 }}>
+                    <Typography variant="h6">
+                      システム稼働状況
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
+                      <CircularProgress size={20} sx={{ mr: 1 }} />
+                      <Typography variant="body2">リアルタイム更新中</Typography>
+                    </Box>
+                  </Box>
+                  
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 6, md: 3 }}>
+                      <Card>
+                        <CardContent sx={{ textAlign: 'center' }}>
+                          <NetworkCheckIcon color="success" sx={{ fontSize: 40 }} />
+                          <Typography variant="h6">Web Server</Typography>
+                          <Chip label="正常" color="success" size="small" />
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                    <Grid size={{ xs: 6, md: 3 }}>
+                      <Card>
+                        <CardContent sx={{ textAlign: 'center' }}>
+                          <StorageIcon color="success" sx={{ fontSize: 40 }} />
+                          <Typography variant="h6">Database</Typography>
+                          <Chip label="正常" color="success" size="small" />
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                    <Grid size={{ xs: 6, md: 3 }}>
+                      <Card>
+                        <CardContent sx={{ textAlign: 'center' }}>
+                          <SecurityIcon color="warning" sx={{ fontSize: 40 }} />
+                          <Typography variant="h6">Firewall</Typography>
+                          <Chip label="警告" color="warning" size="small" />
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                    <Grid size={{ xs: 6, md: 3 }}>
+                      <Card>
+                        <CardContent sx={{ textAlign: 'center' }}>
+                          <MonitorIcon color="success" sx={{ fontSize: 40 }} />
+                          <Typography variant="h6">Load Balancer</Typography>
+                          <Chip label="正常" color="success" size="small" />
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  </Grid>
+                </Paper>
+                
+                <Paper sx={{ p: 2 }}>
+                  <Typography variant="h6" gutterBottom>
+                    リアルタイムログストリーム
+                  </Typography>
+                  <Box sx={{ 
+                    height: 300, 
+                    overflow: 'auto', 
+                    bgcolor: 'background.paper',
+                    border: 1,
+                    borderColor: 'divider',
+                    borderRadius: 1,
+                    p: 1,
+                    fontFamily: 'monospace'
+                  }}>
+                    {logEntries.slice(0, 10).map((log) => (
+                      <Box key={log.id} sx={{ display: 'flex', alignItems: 'center', mb: 1, fontSize: '0.875rem' }}>
+                        <Typography component="span" sx={{ color: 'text.secondary', mr: 2 }}>
+                          {log.timestamp}
+                        </Typography>
+                        <Chip 
+                          label={log.level} 
+                          color={getLogLevelColor(log.level)} 
+                          size="small" 
+                          sx={{ mr: 2, minWidth: 60 }}
+                        />
+                        <Typography component="span" sx={{ color: 'text.secondary', mr: 2 }}>
+                          [{log.source}]
+                        </Typography>
+                        <Typography component="span">
+                          {log.message}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Paper>
+              </Grid>
+              
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Paper sx={{ p: 2, mb: 2 }}>
+                  <Typography variant="h6" gutterBottom>
+                    アクティブ接続
+                  </Typography>
+                  <Typography variant="h3" color="primary.main">1,247</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    同時接続数
+                  </Typography>
+                  <LinearProgress 
+                    variant="determinate" 
+                    value={62} 
+                    sx={{ mt: 2 }}
+                  />
+                </Paper>
+                
+                <Paper sx={{ p: 2, mb: 2 }}>
+                  <Typography variant="h6" gutterBottom>
+                    CPU使用率
+                  </Typography>
+                  <Typography variant="h3" color="warning.main">78%</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    サーバー平均
+                  </Typography>
+                  <LinearProgress 
+                    variant="determinate" 
+                    value={78} 
+                    color="warning"
+                    sx={{ mt: 2 }}
+                  />
+                </Paper>
+                
+                <Paper sx={{ p: 2 }}>
+                  <Typography variant="h6" gutterBottom>
+                    メモリ使用率
+                  </Typography>
+                  <Typography variant="h3" color="success.main">45%</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    使用可能: 12GB / 22GB
+                  </Typography>
+                  <LinearProgress 
+                    variant="determinate" 
+                    value={45} 
+                    color="success"
+                    sx={{ mt: 2 }}
+                  />
+                </Paper>
+              </Grid>
+            </Grid>
           </Box>
         );
 
@@ -555,17 +862,22 @@ function App() {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Material-UI サンプルサイト
+              SecureLog Analytics
             </Typography>
-            <Tooltip title="通知">
+            <Tooltip title="アラート">
               <IconButton color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                  <EmailIcon />
+                <Badge badgeContent={alertCount} color="error">
+                  <NotificationsIcon />
                 </Badge>
               </IconButton>
             </Tooltip>
+            <Tooltip title="エクスポート">
+              <IconButton color="inherit">
+                <DownloadIcon />
+              </IconButton>
+            </Tooltip>
             <Button color="inherit" onClick={() => setDialogOpen(true)}>
-              ログイン
+              管理者
             </Button>
           </Toolbar>
         </AppBar>
@@ -610,11 +922,11 @@ function App() {
           <Toolbar />
           
           <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 3 }}>
-            <Link underline="hover" color="inherit" href="#" onClick={() => setCurrentPage('home')}>
-              ホーム
+            <Link underline="hover" color="inherit" href="#" onClick={() => setCurrentPage('dashboard')}>
+              ダッシュボード
             </Link>
             <Typography color="text.primary">
-              {menuItems.find(item => item.id === currentPage)?.text || 'ホーム'}
+              {menuItems.find(item => item.id === currentPage)?.text || 'ダッシュボード'}
             </Typography>
           </Breadcrumbs>
 
@@ -624,51 +936,29 @@ function App() {
         </Box>
       </Box>
 
-      <SpeedDial
-        ariaLabel="SpeedDial basic example"
-        sx={{ position: 'fixed', bottom: 16, right: 16 }}
-        icon={<SpeedDialIcon />}
-      >
-        <SpeedDialAction
-          icon={<FileCopyIcon />}
-          tooltipTitle="コピー"
-        />
-        <SpeedDialAction
-          icon={<SaveIcon />}
-          tooltipTitle="保存"
-        />
-        <SpeedDialAction
-          icon={<PrintIcon />}
-          tooltipTitle="印刷"
-        />
-        <SpeedDialAction
-          icon={<ShareIcon />}
-          tooltipTitle="共有"
-        />
-      </SpeedDial>
-
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogTitle>ログイン</DialogTitle>
+        <DialogTitle>管理者ログイン</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="メールアドレス"
-            type="email"
+            label="ユーザー名"
+            type="text"
             fullWidth
-            variant="standard"
+            variant="outlined"
+            sx={{ mb: 2 }}
           />
           <TextField
             margin="dense"
             label="パスワード"
             type="password"
             fullWidth
-            variant="standard"
+            variant="outlined"
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>キャンセル</Button>
-          <Button onClick={() => { setDialogOpen(false); setSnackbarOpen(true); }}>
+          <Button onClick={() => { setDialogOpen(false); setSnackbarOpen(true); }} variant="contained">
             ログイン
           </Button>
         </DialogActions>
@@ -676,29 +966,21 @@ function App() {
 
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={6000}
+        autoHideDuration={4000}
         onClose={() => setSnackbarOpen(false)}
       >
         <Alert onClose={() => setSnackbarOpen(false)} severity="success">
-          操作が正常に完了しました！
+          データが更新されました
         </Alert>
       </Snackbar>
 
-      <Box component="footer" sx={{ bgcolor: 'grey.100', py: 6, mt: 6 }}>
+      <Box component="footer" sx={{ bgcolor: 'background.paper', py: 3, mt: 6, borderTop: 1, borderColor: 'divider' }}>
         <Container maxWidth="lg">
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-            <IconButton color="primary">
-              <GitHubIcon />
-            </IconButton>
-            <IconButton color="primary">
-              <LinkedInIcon />
-            </IconButton>
-            <IconButton color="primary">
-              <EmailIcon />
-            </IconButton>
-          </Box>
           <Typography variant="body2" color="text.secondary" align="center">
-            © 2024 Material-UI サンプルサイト. All rights reserved.
+            © 2024 SecureLog Analytics. セキュリティログ解析プラットフォーム
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 1 }}>
+            Built with Material-UI
           </Typography>
         </Container>
       </Box>
