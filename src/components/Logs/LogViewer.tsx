@@ -16,6 +16,21 @@ import { LogEntry } from '../../types';
 import { LOG_GRID_COLUMNS, LOG_LEVELS } from '../../constants';
 import { filterLogsByLevel, filterLogsBySearch } from '../../utils/logUtils';
 
+const getLogLevelColor = (level: string) => {
+  switch (level) {
+    case 'ERROR':
+      return '#ffebee';
+    case 'WARN':
+      return '#fff3e0';
+    case 'INFO':
+      return '#e3f2fd';
+    case 'DEBUG':
+      return '#f3e5f5';
+    default:
+      return 'transparent';
+  }
+};
+
 interface LogViewerProps {
   logs: LogEntry[];
   searchQuery: string;
@@ -85,10 +100,35 @@ const LogViewer: React.FC<LogViewerProps> = ({
             },
           }}
           disableRowSelectionOnClick
+          getRowClassName={(params) => `log-level-${params.row.level?.toLowerCase()}`}
           sx={{
             '& .MuiDataGrid-row': {
               '&:hover': {
                 bgcolor: 'action.hover',
+              },
+              '&.log-level-error': {
+                backgroundColor: '#ffebee',
+                '&:hover': {
+                  backgroundColor: '#ffcdd2',
+                },
+              },
+              '&.log-level-warn': {
+                backgroundColor: '#fff3e0',
+                '&:hover': {
+                  backgroundColor: '#ffe0b2',
+                },
+              },
+              '&.log-level-info': {
+                backgroundColor: '#e3f2fd',
+                '&:hover': {
+                  backgroundColor: '#bbdefb',
+                },
+              },
+              '&.log-level-debug': {
+                backgroundColor: '#f3e5f5',
+                '&:hover': {
+                  backgroundColor: '#e1bee7',
+                },
               },
             },
           }}
