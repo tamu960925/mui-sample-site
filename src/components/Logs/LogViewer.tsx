@@ -9,19 +9,14 @@ import {
   MenuItem,
   InputAdornment,
   Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   Chip,
-  Divider,
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Search as SearchIcon } from '@mui/icons-material';
 import { LogEntry } from '../../types';
-import { LOG_GRID_COLUMNS, LOG_LEVELS } from '../../constants';
+import { LOG_LEVELS } from '../../constants';
 import { filterLogsByLevel, filterLogsBySearch } from '../../utils/logUtils';
+import { ExpandMore as ExpandMoreIcon, ExpandLess as ExpandLessIcon } from '@mui/icons-material';
 
 
 interface LogViewerProps {
@@ -39,8 +34,7 @@ const LogViewer: React.FC<LogViewerProps> = ({
   onSearchChange,
   onLogLevelChange,
 }) => {
-  const [selectedLog, setSelectedLog] = useState<LogEntry | null>(null);
-  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
 
   const filteredLogs = filterLogsBySearch(
     filterLogsByLevel(logs, logLevel),
@@ -48,13 +42,13 @@ const LogViewer: React.FC<LogViewerProps> = ({
   );
 
   const handleRowClick = (params: any) => {
-    setSelectedLog(params.row);
-    setDetailDialogOpen(true);
-  };
-
-  const handleCloseDetail = () => {
-    setDetailDialogOpen(false);
-    setSelectedLog(null);
+    const newExpandedRows = new Set(expandedRows);
+    if (expandedRows.has(params.id)) {
+      newExpandedRows.delete(params.id);
+    } else {
+      newExpandedRows.add(params.id);
+    }
+    setExpandedRows(newExpandedRows);
   };
 
   const getLogLevelChipColor = (level: string) => {
@@ -71,6 +65,104 @@ const LogViewer: React.FC<LogViewerProps> = ({
         return 'default';
     }
   };
+
+  const getRowHeight = (params: any) => {
+    return expandedRows.has(params.id) ? 200 : 52;
+  };
+
+  const customColumns = [
+    { 
+      field: 'expand', 
+      headerName: '', 
+      width: 50,
+      sortable: false,
+      renderCell: (params: any) => (
+        <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+          {expandedRows.has(params.id) ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </Box>
+      ),
+    },
+    { field: 'timestamp', headerName: 'Timestamp', width: 200 },
+    { 
+      field: 'level', 
+      headerName: 'Level', 
+      width: 80,
+      renderCell: (params: any) => {
+        if (expandedRows.has(params.id)) {
+          return null;
+        }
+        return (
+          <Chip
+            label={params.value}
+            color={getLogLevelChipColor(params.value) as any}
+            size="small"
+          />
+        );
+      },
+    },
+    { field: 'source', headerName: 'Source', width: 180 },
+    { 
+      field: 'message', 
+      headerName: 'Message', 
+      flex: 1, 
+      minWidth: 400,
+      renderCell: (params: any) => {
+        if (expandedRows.has(params.id)) {
+          return (
+            <Box sx={{ p: 2, width: '100%', height: '100%' }}>
+              <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
+                <Chip
+                  label={params.row.level}
+                  color={getLogLevelChipColor(params.row.level) as any}
+                  size="small"
+                />
+                <Typography variant="caption" color="text.secondary">
+                  ID: {params.row.id}
+                </Typography>
+              </Box>
+              
+              <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                詳細メッセージ
+              </Typography>
+              <Paper 
+                sx={{ 
+                  p: 1.5, 
+                  bgcolor: 'grey.50',
+                  border: '1px solid',
+                  borderColor: 'grey.200',
+                  maxHeight: 120,
+                  overflow: 'auto'
+                }}
+              >
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    fontFamily: 'monospace',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word'
+                  }}
+                >
+                  {params.row.message}
+                </Typography>
+              </Paper>
+            </Box>
+          );
+        }
+        return (
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {params.value}
+          </Typography>
+        );
+      },
+    },
+  ];
 
   return (
     <Box sx={{ width: '100%', height: '100%' }}>
@@ -113,7 +205,7 @@ const LogViewer: React.FC<LogViewerProps> = ({
       <Paper sx={{ height: 'calc(100vh - 280px)', width: '100%', minHeight: 600 }}>
         <DataGrid
           rows={filteredLogs}
-          columns={LOG_GRID_COLUMNS}
+          columns={customColumns}
           pageSizeOptions={[25, 50, 100]}
           initialState={{
             pagination: {
@@ -122,6 +214,7 @@ const LogViewer: React.FC<LogViewerProps> = ({
           }}
           disableRowSelectionOnClick
           onRowClick={handleRowClick}
+          getRowHeight={getRowHeight}
           getRowClassName={(params) => `log-level-${params.row.level?.toLowerCase()}`}
           sx={{
             '& .MuiDataGrid-row': {
@@ -170,96 +263,6 @@ const LogViewer: React.FC<LogViewerProps> = ({
       <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
         {filteredLogs.length} / {logs.length} 件のログを表示
       </Typography>
-
-      <Dialog
-        open={detailDialogOpen}
-        onClose={handleCloseDetail}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>
-          ログ詳細
-        </DialogTitle>
-        <DialogContent>
-          {selectedLog && (
-            <Box sx={{ pt: 1 }}>
-              <Box sx={{ display: 'flex', gap: 2, mb: 3, alignItems: 'center' }}>
-                <Chip
-                  label={selectedLog.level}
-                  color={getLogLevelChipColor(selectedLog.level) as any}
-                  size="small"
-                />
-                <Typography variant="h6" component="span">
-                  ID: {selectedLog.id}
-                </Typography>
-              </Box>
-
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                  タイムスタンプ
-                </Typography>
-                <Typography variant="body1" sx={{ fontFamily: 'monospace' }}>
-                  {selectedLog.timestamp}
-                </Typography>
-              </Box>
-
-              <Divider sx={{ my: 2 }} />
-
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                  ソース
-                </Typography>
-                <Typography variant="body1">
-                  {selectedLog.source}
-                </Typography>
-              </Box>
-
-              <Divider sx={{ my: 2 }} />
-
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                  メッセージ
-                </Typography>
-                <Paper 
-                  sx={{ 
-                    p: 2, 
-                    bgcolor: 'grey.50',
-                    border: '1px solid',
-                    borderColor: 'grey.200'
-                  }}
-                >
-                  <Typography 
-                    variant="body1" 
-                    sx={{ 
-                      fontFamily: 'monospace',
-                      whiteSpace: 'pre-wrap',
-                      wordBreak: 'break-word'
-                    }}
-                  >
-                    {selectedLog.message}
-                  </Typography>
-                </Paper>
-              </Box>
-
-              <Divider sx={{ my: 2 }} />
-
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="caption" color="text.secondary">
-                  ログレベル: {selectedLog.level}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  作成日時: {selectedLog.timestamp}
-                </Typography>
-              </Box>
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDetail} color="primary">
-            閉じる
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };
