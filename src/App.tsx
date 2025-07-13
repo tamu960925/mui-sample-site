@@ -301,8 +301,8 @@ function App() {
       warnCount: parsedLogs.filter(log => log.level === 'WARN').length,
       infoCount: parsedLogs.filter(log => log.level === 'INFO').length,
       debugCount: parsedLogs.filter(log => log.level === 'DEBUG').length,
-      uniqueIPs: [...new Set(parsedLogs.filter(log => log.ip).map(log => log.ip))].length,
-      statusCodes: {},
+      uniqueIPs: Array.from(new Set(parsedLogs.filter(log => log.ip).map(log => log.ip))).length,
+      statusCodes: {} as Record<string, number>,
       topErrors: []
     };
     
