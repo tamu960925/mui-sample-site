@@ -1,0 +1,27 @@
+Jul 13 10:15:20 server01 systemd[1]: Started nginx.service - The nginx HTTP and reverse proxy server.
+Jul 13 10:15:21 server01 kernel: [12345.678901] ata1.00: ACPI cmd ef/10:06:00:00:00:a0 (SET FEATURES) succeeded
+Jul 13 10:15:22 server01 sshd[2847]: Accepted publickey for admin from 192.168.1.100 port 54321 ssh2: RSA SHA256:abc123def456
+Jul 13 10:15:23 server01 systemd[1]: Starting postgresql.service - PostgreSQL database server...
+Jul 13 10:15:24 server01 postgres[3456]: LOG: database system was shut down at 2025-07-13 10:10:15 JST
+Jul 13 10:15:25 server01 postgres[3456]: LOG: database system is ready to accept connections
+Jul 13 10:15:26 server01 systemd[1]: Started postgresql.service - PostgreSQL database server.
+Jul 13 10:15:27 server01 cron[1234]: (CRON) INFO (pidfile fd = 3)
+Jul 13 10:15:28 server01 cron[1234]: (CRON) INFO (Running @reboot jobs)
+Jul 13 10:15:29 server01 NetworkManager[987]: <info> [1720835729.123] device (eth0): state change: activated -> disconnected (reason 'connection-removed', sys-iface-state: 'managed')
+Jul 13 10:15:30 server01 NetworkManager[987]: <info> [1720835730.456] device (eth0): state change: disconnected -> prepare (reason 'none', sys-iface-state: 'managed')
+Jul 13 10:15:31 server01 NetworkManager[987]: <info> [1720835731.789] device (eth0): state change: prepare -> config (reason 'none', sys-iface-state: 'managed')
+Jul 13 10:15:32 server01 systemd[1]: Started logrotate.service - Rotate log files.
+Jul 13 10:15:33 server01 kernel: [12356.789012] EXT4-fs (sda1): re-mounted. Opts: errors=remount-ro
+Jul 13 10:15:34 server01 systemd-timesyncd[567]: Synchronized to time server 0.pool.ntp.org:123 (0.pool.ntp.org).
+Jul 13 10:15:35 server01 systemd[1]: session-15.scope: Succeeded.
+Jul 13 10:15:36 server01 sudo[4567]: admin : TTY=pts/0 ; PWD=/home/admin ; USER=root ; COMMAND=/bin/systemctl status nginx
+Jul 13 10:15:37 server01 systemd[1]: Started backup.service - Daily backup service.
+Jul 13 10:15:38 server01 kernel: [12358.901234] Out of memory: Kill process 5678 (java) score 856 or sacrifice child
+Jul 13 10:15:39 server01 kernel: [12359.012345] Killed process 5678 (java) total-vm:8388608kB, anon-rss:4194304kB, file-rss:0kB, shmem-rss:0kB
+Jul 13 10:15:40 server01 systemd[1]: myapp.service: Main process exited, code=killed, status=9/KILL
+Jul 13 10:15:41 server01 systemd[1]: myapp.service: Failed with result 'signal'.
+Jul 13 10:15:42 server01 systemd[1]: myapp.service: Scheduled restart job, restart counter is at 1.
+Jul 13 10:15:43 server01 systemd[1]: Stopped myapp.service - My Application Service.
+Jul 13 10:15:44 server01 systemd[1]: Started myapp.service - My Application Service.
+Jul 13 10:15:45 server01 firewall[2345]: DENY IN=eth0 OUT= SRC=203.0.113.5 DST=192.168.1.10 PROTO=TCP SPT=12345 DPT=22
+Jul 13 10:15:46 server01 rsyslog[789]: imjournal: journal reloaded... [v8.2001.0 try http://www.rsyslog.com/e/2007 ]

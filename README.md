@@ -1,4 +1,28 @@
-# Getting Started with Create React App
+# LogAnalyzer Pro
+
+A powerful browser-based log analysis tool built with React and Material UI. This application allows you to upload and analyze various types of log files with real-time statistics and visualizations.
+
+## Features
+
+- 📁 Drag & drop file upload
+- 📊 Real-time log statistics and charts
+- 🔍 Advanced filtering and search
+- 📈 Data visualization with charts
+- 🏢 Business-oriented interface
+- 🔒 Complete privacy (browser-only processing)
+
+## Sample Log Files
+
+The application includes sample log files in the `public/samples/` directory for testing:
+
+- **webserver.log** - Apache/Nginx style web server access logs with HTTP requests, status codes, and IP addresses
+- **application.log** - Java application logs with different log levels (INFO, DEBUG, WARN, ERROR, FATAL)
+- **error.log** - Detailed error logs with stack traces and exception information
+- **system.log** - Linux system logs including systemd, kernel, and service messages
+
+These sample files demonstrate the log parsing capabilities and can be used to test the analysis features.
+
+## Getting Started
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

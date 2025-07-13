@@ -1,0 +1,45 @@
+2025-07-13 10:15:27,901 ERROR [http-nio-8080-exec-5] com.example.service.PaymentService - Payment processing failed for order ID: 789
+    java.lang.RuntimeException: Insufficient funds in account
+        at com.example.service.PaymentService.processPayment(PaymentService.java:142)
+        at com.example.controller.OrderController.createOrder(OrderController.java:89)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+2025-07-13 10:15:31,123 ERROR [http-nio-8080-exec-8] com.example.exception.GlobalExceptionHandler - Unauthorized access attempt
+    com.example.exception.UnauthorizedException: Access denied for resource /api/admin/users
+        at com.example.security.AuthorizationFilter.doFilter(AuthorizationFilter.java:78)
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+
+2025-07-13 10:15:38,234 ERROR [http-nio-8080-exec-13] com.example.service.AnalyticsService - Analytics processing failed
+    java.sql.SQLException: Connection timed out after 30 seconds
+        at com.mysql.cj.jdbc.ConnectionImpl.pingInternal(ConnectionImpl.java:2158)
+        at com.mysql.cj.jdbc.ConnectionImpl.isValid(ConnectionImpl.java:1328)
+        at com.example.repository.AnalyticsRepository.getReport(AnalyticsRepository.java:156)
+
+2025-07-13 10:15:40,890 FATAL [main] com.example.Application - Critical system error
+    java.lang.OutOfMemoryError: Java heap space
+        at java.util.Arrays.copyOf(Arrays.java:3332)
+        at java.lang.AbstractStringBuilder.ensureCapacityInternal(AbstractStringBuilder.java:124)
+        at java.lang.StringBuilder.append(StringBuilder.java:136)
+        at com.example.service.LogProcessingService.processLogs(LogProcessingService.java:234)
+
+2025-07-13 10:15:42,567 ERROR [scheduled-task-2] com.example.service.BackupService - Database backup failed
+    java.io.IOException: No space left on device
+        at java.io.FileOutputStream.writeBytes(Native Method)
+        at java.io.FileOutputStream.write(FileOutputStream.java:326)
+        at com.example.service.BackupService.createBackup(BackupService.java:98)
+
+2025-07-13 10:15:45,123 ERROR [http-nio-8080-exec-15] com.example.controller.FileController - File upload validation failed
+    com.example.exception.InvalidFileTypeException: Unsupported file type: .exe
+        at com.example.util.FileValidator.validateFileType(FileValidator.java:45)
+        at com.example.controller.FileController.uploadFile(FileController.java:67)
+
+2025-07-13 10:15:47,789 ERROR [cache-eviction-thread] com.example.service.CacheService - Cache eviction failed
+    redis.clients.jedis.exceptions.JedisConnectionException: Could not get a resource from the pool
+        at redis.clients.jedis.util.Pool.getResource(Pool.java:53)
+        at com.example.service.CacheService.evictExpired(CacheService.java:178)
+
+2025-07-13 10:15:50,456 ERROR [message-processor-1] com.example.service.MessageQueueService - Message processing failed
+    com.fasterxml.jackson.core.JsonParseException: Unexpected character ('}' (code 125)): was expecting double-quote
+        at com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1702)
+        at com.example.service.MessageQueueService.processMessage(MessageQueueService.java:123)

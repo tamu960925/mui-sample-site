@@ -1,0 +1,20 @@
+2025-07-13 10:15:23,123 INFO [main] com.example.Application - Application started successfully on port 8080
+2025-07-13 10:15:24,456 DEBUG [http-nio-8080-exec-1] com.example.controller.UserController - Processing login request for user: admin
+2025-07-13 10:15:24,789 INFO [http-nio-8080-exec-1] com.example.service.AuthService - User 'admin' authenticated successfully
+2025-07-13 10:15:25,012 WARN [http-nio-8080-exec-2] com.example.service.CacheService - Cache miss for key: user_profile_123, falling back to database
+2025-07-13 10:15:25,345 INFO [http-nio-8080-exec-3] com.example.controller.ProductController - Fetching products for page 1, size 20
+2025-07-13 10:15:26,678 DEBUG [http-nio-8080-exec-4] com.example.repository.OrderRepository - Creating new order for user ID: 456
+2025-07-13 10:15:27,901 ERROR [http-nio-8080-exec-5] com.example.service.PaymentService - Payment processing failed for order ID: 789, reason: Insufficient funds
+2025-07-13 10:15:28,234 INFO [http-nio-8080-exec-6] com.example.service.NotificationService - Email notification sent to user@example.com
+2025-07-13 10:15:29,567 WARN [scheduled-task-1] com.example.service.MaintenanceService - Database connection pool usage at 85%, consider increasing pool size
+2025-07-13 10:15:30,890 DEBUG [http-nio-8080-exec-7] com.example.controller.ApiController - Request validation passed for endpoint: /api/users/123
+2025-07-13 10:15:31,123 ERROR [http-nio-8080-exec-8] com.example.exception.GlobalExceptionHandler - Unauthorized access attempt from IP: 203.0.113.5
+2025-07-13 10:15:32,456 INFO [http-nio-8080-exec-9] com.example.service.AuditService - User action logged: DELETE /api/users/123 by admin
+2025-07-13 10:15:33,789 TRACE [http-nio-8080-exec-10] com.example.util.ValidationUtil - Validating request parameters: {userId=123, action=delete}
+2025-07-13 10:15:34,012 WARN [async-processor-1] com.example.service.FileUploadService - Upload rejected: file size 15MB exceeds limit of 10MB
+2025-07-13 10:15:35,345 INFO [http-nio-8080-exec-11] com.example.controller.ProfileController - Profile updated for user ID: 789
+2025-07-13 10:15:36,678 DEBUG [health-check-thread] com.example.health.HealthCheckService - Health check passed: all services operational
+2025-07-13 10:15:37,901 INFO [http-nio-8080-exec-12] com.example.service.ConfigService - Configuration updated: max_concurrent_users=500
+2025-07-13 10:15:38,234 ERROR [http-nio-8080-exec-13] com.example.service.AnalyticsService - Analytics processing failed: database timeout after 30 seconds
+2025-07-13 10:15:39,567 INFO [http-nio-8080-exec-14] com.example.controller.LogController - Log export initiated by admin, format: JSON
+2025-07-13 10:15:40,890 FATAL [main] com.example.Application - Critical error detected: OutOfMemoryError, initiating graceful shutdown
