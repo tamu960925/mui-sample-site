@@ -110,7 +110,7 @@ const LogViewer: React.FC<LogViewerProps> = ({
         </FormControl>
       </Box>
 
-      <Paper sx={{ height: 600, width: '100%' }}>
+      <Paper sx={{ height: 700, width: '100%' }}>
         <DataGrid
           rows={filteredLogs}
           columns={LOG_GRID_COLUMNS}
@@ -153,6 +153,15 @@ const LogViewer: React.FC<LogViewerProps> = ({
                   backgroundColor: '#e1bee7',
                 },
               },
+            },
+            '& .MuiDataGrid-cell': {
+              fontSize: '0.875rem',
+              lineHeight: 1.4,
+            },
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: '#f5f5f5',
+              fontSize: '0.875rem',
+              fontWeight: 600,
             },
           }}
         />

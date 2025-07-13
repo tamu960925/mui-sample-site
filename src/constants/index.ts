@@ -98,10 +98,10 @@ export const MENU_ITEMS: MenuItem[] = [
 ];
 
 export const LOG_GRID_COLUMNS = [
-  { field: 'timestamp', headerName: 'Timestamp', width: 180 },
-  { field: 'level', headerName: 'Level', width: 100 },
-  { field: 'source', headerName: 'Source', width: 150 },
-  { field: 'message', headerName: 'Message', width: 500, flex: 1 },
+  { field: 'timestamp', headerName: 'Timestamp', width: 200 },
+  { field: 'level', headerName: 'Level', width: 80 },
+  { field: 'source', headerName: 'Source', width: 180 },
+  { field: 'message', headerName: 'Message', flex: 1, minWidth: 400 },
 ];
 
 export const REGEX_PATTERNS = {
