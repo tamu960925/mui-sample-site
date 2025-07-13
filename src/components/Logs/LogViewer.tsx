@@ -347,36 +347,11 @@ const LogViewer: React.FC<LogViewerProps> = ({
           disableRowSelectionOnClick
           onRowClick={handleRowClick}
           getRowHeight={getRowHeight}
-          getRowClassName={(params) => `log-level-${params.row.level?.toLowerCase()}`}
           sx={{
             '& .MuiDataGrid-row': {
               cursor: 'pointer',
               '&:hover': {
                 bgcolor: 'action.hover',
-              },
-              '&.log-level-error': {
-                backgroundColor: '#ffebee',
-                '&:hover': {
-                  backgroundColor: '#ffcdd2',
-                },
-              },
-              '&.log-level-warn': {
-                backgroundColor: '#fff3e0',
-                '&:hover': {
-                  backgroundColor: '#ffe0b2',
-                },
-              },
-              '&.log-level-info': {
-                backgroundColor: '#e3f2fd',
-                '&:hover': {
-                  backgroundColor: '#bbdefb',
-                },
-              },
-              '&.log-level-debug': {
-                backgroundColor: '#f3e5f5',
-                '&:hover': {
-                  backgroundColor: '#e1bee7',
-                },
               },
             },
             '& .MuiDataGrid-cell': {
