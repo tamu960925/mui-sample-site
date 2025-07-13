@@ -23,20 +23,6 @@ import { LogEntry } from '../../types';
 import { LOG_GRID_COLUMNS, LOG_LEVELS } from '../../constants';
 import { filterLogsByLevel, filterLogsBySearch } from '../../utils/logUtils';
 
-const getLogLevelColor = (level: string) => {
-  switch (level) {
-    case 'ERROR':
-      return '#ffebee';
-    case 'WARN':
-      return '#fff3e0';
-    case 'INFO':
-      return '#e3f2fd';
-    case 'DEBUG':
-      return '#f3e5f5';
-    default:
-      return 'transparent';
-  }
-};
 
 interface LogViewerProps {
   logs: LogEntry[];
